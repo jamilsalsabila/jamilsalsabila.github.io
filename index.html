@@ -406,7 +406,7 @@
   .tb-btn.print { background: rgba(74,130,196,0.6); border-color: rgba(74,130,196,0.8); }
   .tb-btn.print:hover { background: rgba(74,130,196,0.85); }
   .tb-btn.lock-out { color: rgba(255,180,180,0.85); }
-  body { padding-bottom: 56px; }
+  body { padding-bottom: 56px; }  /* updated dynamically by JS */
 
   /* Lock: hide all edit UI by default */
   .add-item-btn, .skill-add { display: none; }
@@ -419,6 +419,57 @@
   /* Print */
   .tb-btn.save { background: rgba(80,160,100,0.55); border-color: rgba(80,160,100,0.8); }
   .tb-btn.save:hover { background: rgba(80,160,100,0.85); }
+
+  @media (max-width: 680px) {
+    body { padding: 0; }
+
+    .cv {
+      grid-template-columns: 1fr;
+      max-width: 100%;
+      box-shadow: none;
+    }
+
+    .sidebar {
+      padding: 32px 24px 28px;
+      gap: 28px;
+    }
+
+    .photo-wrapper { justify-content: flex-start; }
+    .photo-frame, .photo-square { width: 88px; height: 104px; }
+
+    .sidebar-name { font-size: 22px; }
+
+    .main {
+      padding: 28px 20px 80px;
+      gap: 28px;
+    }
+
+    .exp-header {
+      flex-direction: column;
+      gap: 2px;
+    }
+    .exp-date, .edu-date {
+      font-size: 11px;
+      color: var(--navy-light);
+    }
+
+    .edu-header {
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    #lock-bar {
+      flex-wrap: wrap;
+      gap: 8px;
+      padding: 10px 14px;
+      justify-content: flex-start;
+    }
+    #lock-hint { font-size: 11px; }
+    #lock-input { width: 100%; }
+    #lock-status { font-size: 11px; }
+    .edit-toolbar { flex-wrap: wrap; gap: 8px; }
+    .tb-btn { font-size: 11px; padding: 5px 11px; }
+  }
   @media print {
     body { background: white; padding: 0; }
     .cv { box-shadow: none; max-width: 100%; }
@@ -878,6 +929,15 @@ window.unlockPage = function() {
     a.click();
     URL.revokeObjectURL(a.href);
   }
+
+  function adjustPadding() {
+    const bar = document.getElementById('lock-bar');
+    if (bar) {
+      document.body.style.paddingBottom = (bar.offsetHeight + 8) + 'px';
+    }
+  }
+  adjustPadding();
+  window.addEventListener('resize', adjustPadding);
 </script>
 </body>
 </html>
