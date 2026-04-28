@@ -562,7 +562,7 @@
           <div class="portfolio-link-url" contenteditable="false" data-ce="true">https://thisiscotch.com/coaching/form-coaching/new</div>
           <span class="portfolio-delete" onclick="deletePortfolio(this)" title="Hapus">×</span>
         </div>
-      </div>
+      <div class="portfolio-link" data-portfolio=""><div class="portfolio-link-label" contenteditable="false" data-ce="true">DIGIT MEMORY (GAME)</div><div class="portfolio-link-url" contenteditable="false" data-ce="true">https://digit-memory-rush.vercel.app/</div><span class="portfolio-delete" onclick="deletePortfolio(this)" title="Hapus">×</span></div></div>
       <div class="skill-add" onclick="addPortfolio()" style="margin-top:8px;">+ Tambah portofolio</div>
     </div>
   </aside>
@@ -662,19 +662,32 @@
 </div>
 
 <script>
+  function setEditableState(root) {
+    const isEditMode = document.body.classList.contains('edit-mode');
+    root.querySelectorAll('[data-ce="true"]').forEach(el => {
+      el.contentEditable = isEditMode ? 'true' : 'false';
+    });
+  }
+
+  function focusAndSelect(el) {
+    if (!el) return;
+    el.focus();
+    const range = document.createRange();
+    range.selectNodeContents(el);
+    const sel = window.getSelection();
+    sel.removeAllRanges();
+    sel.addRange(range);
+  }
+
   function addSkill() {
     const container = document.getElementById('skills-container');
     const tag = document.createElement('span');
     tag.className = 'skill-tag';
-    tag.contentEditable = 'true';
+    tag.setAttribute('data-ce', 'true');
+    tag.contentEditable = document.body.classList.contains('edit-mode') ? 'true' : 'false';
     tag.textContent = 'Skill baru';
     container.appendChild(tag);
-    tag.focus();
-    const range = document.createRange();
-    range.selectNodeContents(tag);
-    const sel = window.getSelection();
-    sel.removeAllRanges();
-    sel.addRange(range);
+    focusAndSelect(tag);
   }
 
   function addBullet() {
@@ -688,15 +701,11 @@
     }
     if (!list) return;
     const li = document.createElement('li');
-    li.contentEditable = 'true';
+    li.setAttribute('data-ce', 'true');
+    li.contentEditable = document.body.classList.contains('edit-mode') ? 'true' : 'false';
     li.textContent = 'Tambahkan detail pekerjaan';
     list.appendChild(li);
-    li.focus();
-    const range = document.createRange();
-    range.selectNodeContents(li);
-    const sel = window.getSelection();
-    sel.removeAllRanges();
-    sel.addRange(range);
+    focusAndSelect(li);
   }
 
   // Delete skill on backspace when empty
@@ -718,7 +727,8 @@
     item.setAttribute('data-portfolio', '');
     item.innerHTML = `<div class="portfolio-link-label" contenteditable="false" data-ce="true">Nama Proyek</div><div class="portfolio-link-url" contenteditable="false" data-ce="true">https://</div><span class="portfolio-delete" onclick="deletePortfolio(this)" title="Hapus">×</span>`;
     list.appendChild(item);
-    item.querySelector('.portfolio-link-label').focus();
+    setEditableState(item);
+    focusAndSelect(item.querySelector('.portfolio-link-label'));
   }
   function deletePortfolio(btn) {
     btn.closest('[data-portfolio]').remove();
@@ -765,6 +775,7 @@
       <div class="exp-role" contenteditable="false" data-ce="true">${role}</div>
       <ul class="exp-bullets">${bullets.map(b => `<li contenteditable="false" data-ce="true">${b}</li>`).join('')}</ul>`;
     attachBulletListeners(div.querySelector('.exp-bullets'));
+    setEditableState(div);
     return div;
   }
 
@@ -772,7 +783,7 @@
     const list = document.getElementById('exp-list');
     const item = makeExpItem();
     list.appendChild(item);
-    item.querySelector('.exp-company').focus();
+    focusAndSelect(item.querySelector('.exp-company'));
   }
 
   function addTraining() {
@@ -788,7 +799,8 @@
       </div>
       <div class="exp-role" contenteditable="false" data-ce="true">Nama Program Pelatihan</div>`;
     list.appendChild(div);
-    div.querySelector('.exp-company').focus();
+    setEditableState(div);
+    focusAndSelect(div.querySelector('.exp-company'));
   }
 
   function attachBulletListeners(list) {
@@ -804,7 +816,8 @@
       if (e.key === 'Enter') {
         e.preventDefault();
         const li = document.createElement('li');
-        li.contentEditable = 'true';
+        li.setAttribute('data-ce', 'true');
+        li.contentEditable = document.body.classList.contains('edit-mode') ? 'true' : 'false';
         li.textContent = '';
         e.target.after(li);
         li.focus();
@@ -940,6 +953,7 @@ window.unlockPage = function() {
   adjustPadding();
   window.addEventListener('resize', adjustPadding);
 </script>
+
 
 
 </body></html>
